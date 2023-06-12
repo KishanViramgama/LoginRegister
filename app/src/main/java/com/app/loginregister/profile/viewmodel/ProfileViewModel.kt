@@ -1,51 +1,52 @@
 package com.app.loginregister.profile.viewmodel
 
 import android.content.Context
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.app.loginregister.R
 import com.app.loginregister.login.item.LoginItem
 import com.app.loginregister.profile.repository.ProfileRepository
-import com.app.loginregister.util.Resource
 import com.app.loginregister.util.ResponseCodeCheck
+import com.app.loginregister.util.ResponseData
+import com.app.loginregister.util.failMsg
+import com.app.loginregister.util.isNetworkConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val context: Context,
-    private val profileRepository: ProfileRepository
+    private val context: Context, private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     @Inject
     lateinit var responseCodeCheck: ResponseCodeCheck
 
-    private var profileMutableLiveData: MutableLiveData<Resource<LoginItem>> = MutableLiveData()
-    var profileLiveData: LiveData<Resource<LoginItem>> = profileMutableLiveData
-    
-    fun getUserProfileData(hashMap: HashMap<String,String>){
-        profileMutableLiveData.value = Resource.loading(null)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response: Response<LoginItem> = profileRepository.getUserProfileData(hashMap)
-                profileMutableLiveData.postValue(
-                    responseCodeCheck.getResponseResult(
-                        response
+    val profileState: MutableStateFlow<ResponseData<LoginItem>> =
+        MutableStateFlow(ResponseData.Empty())
+
+    fun getUserProfileData(hashMap: HashMap<String, String>) {
+
+        if (context.isNetworkConnected()) {
+            viewModelScope.launch {
+                profileState.value = ResponseData.Loading()
+                profileRepository.getUserProfileData(hashMap).catch {
+                    profileState.value =
+                        ResponseData.Error(null, context.failMsg(error = it.toString()))
+                }.collect {
+                    profileState.value = responseCodeCheck.getResponseResult(
+                        it
                     )
-                )
-            } catch (e: Exception) {
-                Log.d("data_information",e.toString())
-                profileMutableLiveData.postValue(
-                    Resource.error(context.resources.getString(R.string.wrong), null)
-                )
+                }
             }
+        } else {
+            profileState.value = ResponseData.InternetConnection(
+                context.resources.getString(R.string.internetConnection)
+            )
         }
+
     }
 
 }

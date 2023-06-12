@@ -1,6 +1,6 @@
 package com.app.loginregister.util
 
-object KeyName{
+object KeyName {
     const val name = "name"
     const val email = "email"
     const val password = "password"

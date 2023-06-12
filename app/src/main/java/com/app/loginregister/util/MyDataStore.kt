@@ -1,7 +1,6 @@
 package com.app.loginregister.util
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -44,5 +43,11 @@ class MyDataStore constructor(private val context: Context) {
         .map { preferences ->
             preferences[IS_LOGIN] ?: false
         }
+
+    suspend fun logout() {
+        context.dataStore.edit {
+            it.clear()
+        }
+    }
 
 }

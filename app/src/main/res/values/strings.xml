@@ -29,6 +29,7 @@
     <string name="yes">Yes</string>
     <string name="loading">Loading....</string>
     <string name="logoutMSG">Are you sure you want to log out</string>
+    <string name="internetConnection">Internet connection not available</string>
     <string name="permission">Please allow permission other wise not work this feature</string>
     <string name="wrong">Some thing went to wrong please try again</string>
 

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class LoginItem(
-    @SerializedName("data") val data: Data?=null,
+    @SerializedName("data") val data: Data? = null,
 ) : BaseItem(), Serializable {
 
     data class Data(

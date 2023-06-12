@@ -2,17 +2,26 @@ package com.app.loginregister.login.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,12 +37,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.app.loginregister.R
 import com.app.loginregister.login.viewmodel.LoginViewModel
 import com.app.loginregister.profile.activity.ProfileActivity
 import com.app.loginregister.register.activity.RegisterActivity
 import com.app.loginregister.ui.theme.LoginRegisterTheme
-import com.app.loginregister.util.*
+import com.app.loginregister.util.EditTextInput
+import com.app.loginregister.util.Method
+import com.app.loginregister.util.MyDataStore
+import com.app.loginregister.util.ResponseData
+import com.app.loginregister.util.isValidMail
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -69,39 +83,48 @@ class LoginActivity : ComponentActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-        loginViewModel.loginItemLiveData.observe(this) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    isShowLoading = false
-                    if (it.data!!.status) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            dataStore.insertUserID(it.data.data?.id.toString())
-                            dataStore.isUserLogin(true)
-                            startActivity(
-                                Intent(
-                                    this@LoginActivity, ProfileActivity::class.java
-                                ).putExtra("id", it.data.data?.id.toString())
-                            )
-                            finishAffinity()
+
+        lifecycleScope.launch {
+            loginViewModel.loginState.collect {
+                when (it) {
+
+                    is ResponseData.Success -> {
+                        isShowLoading = false
+                        if (it.data!!.status) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                dataStore.insertUserID(it.data.data?.id.toString())
+                                dataStore.isUserLogin(true)
+                                startActivity(
+                                    Intent(
+                                        this@LoginActivity, ProfileActivity::class.java
+                                    ).putExtra("id", it.data.data?.id.toString())
+                                )
+                                finishAffinity()
+                            }
+                        } else {
+                            isShowDialog = true
+                            message = it.data.message
                         }
-                    } else {
-                        isShowDialog = true
-                        message = it.data.message
                     }
-                }
-                Status.LOADING -> {
-                    isShowLoading = true
-                    Log.d("data_information", "LOADING")
-                }
-                Status.ERROR -> {
-                    isShowLoading = false
-                    Log.d("data_information", "ERROR")
-                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+
+                    is ResponseData.Loading -> {
+                        isShowLoading = true
+                    }
+
+                    is ResponseData.Error -> {
+                        isShowLoading = false
+                        Toast.makeText(this@LoginActivity, it.error, Toast.LENGTH_SHORT).show()
+                    }
+
+                    is ResponseData.InternetConnection -> {
+                        Toast.makeText(this@LoginActivity, it.error, Toast.LENGTH_SHORT).show()
+                    }
+
+                    is ResponseData.Empty -> {}
                 }
             }
         }
@@ -197,6 +220,7 @@ class LoginActivity : ComponentActivity() {
                                     }
                                     loginViewModel.login(hashMap)
                                 }
+
                             },
                             modifier = Modifier
                                 .padding(top = 40.dp)
@@ -213,9 +237,14 @@ class LoginActivity : ComponentActivity() {
                                 .padding(top = 40.dp)
                                 .align(Alignment.CenterHorizontally)
                         ) {
-                            val (textDont, textSignUp) = createRefs()
+                            val (textDont, textSignUp, spacer) = createRefs()
                             Text(resources.getString(R.string.dontHaveAnAccount),
                                 Modifier.constrainAs(textDont) {})
+                            Spacer(modifier = Modifier
+                                .width(10.dp)
+                                .constrainAs(spacer) {
+                                    start.linkTo(textDont.end)
+                                })
                             Text(resources.getString(R.string.signUp),
                                 modifier = Modifier
                                     .clickable {
@@ -226,9 +255,9 @@ class LoginActivity : ComponentActivity() {
                                         )
                                     }
                                     .constrainAs(textSignUp) {
-                                        start.linkTo(textDont.end)
+                                        start.linkTo(spacer.end)
                                     }
-                                    .padding(start = 10.dp))
+                            )
                         }
                         Text(
                             text = resources.getString(R.string.orConnect),

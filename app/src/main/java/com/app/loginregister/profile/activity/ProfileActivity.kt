@@ -2,15 +2,23 @@ package com.app.loginregister.profile.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.app.loginregister.R
 import com.app.loginregister.login.activity.LoginActivity
 import com.app.loginregister.login.item.LoginItem
@@ -28,7 +37,7 @@ import com.app.loginregister.profile.viewmodel.ProfileViewModel
 import com.app.loginregister.ui.theme.LoginRegisterTheme
 import com.app.loginregister.util.Method
 import com.app.loginregister.util.MyDataStore
-import com.app.loginregister.util.Status
+import com.app.loginregister.util.ResponseData
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,23 +79,31 @@ class ProfileActivity : ComponentActivity() {
         }
         profileViewModel.getUserProfileData(hashMap)
 
-        profileViewModel.profileLiveData.observe(this) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    loginData = it.data!!
-                    isShowLoading = false
-                }
-                Status.LOADING -> {
-                    isShowLoading = true
-                    Log.d("data_information", "LOADING")
-                }
-                Status.ERROR -> {
-                    isShowLoading = false
-                    Log.d("data_information", "ERROR")
-                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-                }
-            }
+        lifecycleScope.launch {
+            profileViewModel.profileState.collect {
+                when (it) {
+                    is ResponseData.Success -> {
+                        loginData = it.data!!
+                        isShowLoading = false
+                    }
 
+                    is ResponseData.Loading -> {
+                        isShowLoading = true
+                    }
+
+                    is ResponseData.Error -> {
+                        isShowLoading = false
+                        Toast.makeText(this@ProfileActivity, it.error, Toast.LENGTH_SHORT).show()
+                    }
+
+                    is ResponseData.InternetConnection -> {
+                        Toast.makeText(this@ProfileActivity, it.error, Toast.LENGTH_SHORT).show()
+                    }
+
+                    is ResponseData.Empty -> {}
+                }
+
+            }
         }
 
         setContent {
@@ -119,9 +136,10 @@ class ProfileActivity : ComponentActivity() {
                             fontSize = 22.sp,
                             textAlign = TextAlign.Center
                         )
-                        ElevatedButton(onClick = {
-                            isShowDialog = true
-                        },
+                        ElevatedButton(
+                            onClick = {
+                                isShowDialog = true
+                            },
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(top = 20.dp, bottom = 20.dp)
@@ -132,16 +150,17 @@ class ProfileActivity : ComponentActivity() {
                         }
                         if (isShowDialog) {
                             method.ShowMyDialog(
-                                yes = { CoroutineScope(Dispatchers.IO).launch {
-                                    myDataStore.insertUserID("")
-                                    myDataStore.isUserLogin(false)
-                                    startActivity(
-                                        Intent(
-                                            this@ProfileActivity, LoginActivity::class.java
+                                yes = {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        myDataStore.logout()
+                                        startActivity(
+                                            Intent(
+                                                this@ProfileActivity, LoginActivity::class.java
+                                            )
                                         )
-                                    )
-                                    finishAffinity()
-                                } },
+                                        finishAffinity()
+                                    }
+                                },
                                 no = { isShowDialog = false },
                                 title = resources.getString(R.string.app_name),
                                 msg = resources.getString(R.string.logoutMSG)

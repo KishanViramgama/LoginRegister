@@ -1,51 +1,60 @@
 package com.app.loginregister.login.viewmodel
 
 import android.content.Context
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.app.loginregister.R
 import com.app.loginregister.login.item.LoginItem
 import com.app.loginregister.login.repository.LoginRepository
-import com.app.loginregister.util.Resource
 import com.app.loginregister.util.ResponseCodeCheck
+import com.app.loginregister.util.ResponseData
+import com.app.loginregister.util.failMsg
+import com.app.loginregister.util.isNetworkConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val context: Context,
-    private val loginRepository: LoginRepository
+    private val context: Context, private val loginRepository: LoginRepository
 ) : ViewModel() {
 
     @Inject
     lateinit var responseCodeCheck: ResponseCodeCheck
 
-    private var loginItemMutableLiveData: MutableLiveData<Resource<LoginItem>> = MutableLiveData()
-    var loginItemLiveData: LiveData<Resource<LoginItem>> = loginItemMutableLiveData
+    /**
+     * Set default empty
+     */
+
+    val loginState: MutableStateFlow<ResponseData<LoginItem>> =
+        MutableStateFlow(ResponseData.Empty())
+
+    /**
+     * You can set loading in onStart flow section or you can set directly. which you want to you are preferred
+     */
 
     fun login(hashMap: HashMap<String, String>) {
 
-        loginItemMutableLiveData.value = Resource.loading(null)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response: Response<LoginItem> = loginRepository.getData(hashMap)
-                loginItemMutableLiveData.postValue(
-                    responseCodeCheck.getResponseResult(
-                        response
+        if (context.isNetworkConnected()) {
+            viewModelScope.launch {
+                loginRepository.getData(hashMap).onStart {
+                    loginState.value = ResponseData.Loading()
+                }.catch {
+                    loginState.value =
+                        ResponseData.Error(null, context.failMsg(error = it.toString()))
+                }.collect {
+                    loginState.value = responseCodeCheck.getResponseResult(
+                        it
                     )
-                )
-            } catch (e: Exception) {
-                Log.d("data_information",e.toString())
-                loginItemMutableLiveData.postValue(
-                    Resource.error(context.resources.getString(R.string.wrong), null)
-                )
+                }
             }
+        } else {
+            loginState.value = ResponseData.InternetConnection(
+                context.resources.getString(R.string.internetConnection)
+            )
         }
 
     }
