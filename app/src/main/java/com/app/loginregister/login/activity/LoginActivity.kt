@@ -95,7 +95,6 @@ class LoginActivity : ComponentActivity() {
                     is ResponseData.Success -> {
                         isShowLoading = false
                         if (it.data!!.status) {
-                            CoroutineScope(Dispatchers.IO).launch {
                                 dataStore.insertUserID(it.data.data?.id.toString())
                                 dataStore.isUserLogin(true)
                                 startActivity(
@@ -104,7 +103,6 @@ class LoginActivity : ComponentActivity() {
                                     ).putExtra("id", it.data.data?.id.toString())
                                 )
                                 finishAffinity()
-                            }
                         } else {
                             isShowDialog = true
                             message = it.data.message
