@@ -115,9 +115,9 @@ class Method @Inject constructor(private val context: Context) {
      * Dialog code
      */
     @Composable
-    fun CustomDialog(onClickCamera: () -> Unit, onClickImage: () -> Unit) {
+    fun CustomDialog(onClickCamera: () -> Unit, onClickImage: () -> Unit, onDismiss: () -> Unit) {
         Dialog(
-            onDismissRequest = { },
+            onDismissRequest = { onDismiss.invoke()},
             properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
         ) {
             Surface(

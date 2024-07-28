@@ -383,6 +383,8 @@ class RegisterActivity : ComponentActivity() {
                                 } else {
                                     launcherPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                                 }
+                            }, onDismiss = {
+                                isImagePickDialog = false
                             })
                         }
                     }

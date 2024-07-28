@@ -1,0 +1,55 @@
+[versions]
+activityCompose = "1.9.0"
+compose = "1.0.0-alpha.1"
+constraintlayoutCompose = "1.0.1"
+compiler = "4.14.2"
+converterGson = "2.9.0"
+coreKtx = "1.13.0"
+coreSplashscreen = "1.0.1"
+datastorePreferences = "1.1.0"
+gson = "2.10.1"
+glide = "4.14.2"
+espressoCore = "3.5.1"
+hiltAndroidCompiler = "2.48"
+hiltAndroid = "2.48"
+junitVersion = "1.1.5"
+junit = "4.13.2"
+kotlinxCoroutinesAndroid = "1.7.3"
+lifecycleProcess = "2.7.0"
+lifecycleRuntimeKtx = "2.7.0"
+material = "1.11.0"
+material3 = "1.2.1"
+retrofit = "2.9.0"
+uiToolingPreview = "1.6.5"
+ui = "1.6.5"
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleProcess" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+compose = { module = "com.github.bumptech.glide:compose", version.ref = "compose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiToolingPreview" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiToolingPreview" }
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiToolingPreview" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
+androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
+androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+
+[plugins]

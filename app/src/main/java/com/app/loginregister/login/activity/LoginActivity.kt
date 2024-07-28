@@ -91,7 +91,6 @@ class LoginActivity : ComponentActivity() {
         lifecycleScope.launch {
             loginViewModel.loginState.collect {
                 when (it) {
-
                     is ResponseData.Success -> {
                         isShowLoading = false
                         if (it.data!!.status) {
