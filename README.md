@@ -21,3 +21,8 @@ Login Register using jetpack compose
 <ul>
   <li>Add Kotlin flows</li>
 </ul>
+
+<h3>Change Log 1.0.2</h3>
+<ul>
+  <li>New Structure Introduced</li>
+</ul>
