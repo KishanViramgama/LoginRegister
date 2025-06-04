@@ -33,4 +33,29 @@
     <string name="permission">Please allow permission other wise not work this feature</string>
     <string name="wrong">Some thing went to wrong please try again</string>
 
+    <string name="bad_request">Bad Request</string>
+    <string name="unauthorized">Unauthorized</string>
+    <string name="forbidden">Forbidden</string>
+    <string name="not_found">Not Found</string>
+    <string name="method_not_allowed">Method Not Allowed</string>
+    <string name="conflict">Conflict</string>
+    <string name="unprocessable_entity">Unprocessable Entity</string>
+    <string name="internal_server_error">Internal Server Error</string>
+    <string name="bad_gateway">Bad Gateway</string>
+    <string name="service_unavailable">Service Unavailable</string>
+    <string name="gateway_timeout">Gateway Timeout</string>
+    <string name="unknown">Unknown</string>
+
+    <string name="allowImageTitle">Choose Image</string>
+    <string name="select_option">Select option</string>
+    <string name="take_from_camera">Take from Camera</string>
+    <string name="select_from_gallery">Select from Gallery</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="setting">Setting</string>
+    <string name="setting_des">Please allow camara permission in app setting</string>
+    <string name="please_allow_limited_image_access_for_this_app">Please allow limited image access for this app</string>
+    <string name="userList">User List</string>
+
 </resources>
