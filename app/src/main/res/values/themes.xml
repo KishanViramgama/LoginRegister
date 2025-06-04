@@ -6,6 +6,6 @@
         <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/launch_background</item>
         <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">1000</item>
         <!--<item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@drawable/launch_background</item>-->
-        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 </resources>
