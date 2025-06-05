@@ -1,7 +1,5 @@
 # 🚀 Login and Register Android App Using Jetpack Compose
 
----
-
 ## ✨ Modern Login & Registration App with Jetpack Compose, MVVM, Dagger Hilt, and Kotlin Coroutines
 
 This open-source Android app demonstrates how to implement **secure user authentication** using **Jetpack Compose** and **modern Android development best practices**. The project features a complete **Login**, **Register**, and **User List** flow, built with:
@@ -21,8 +19,6 @@ This open-source Android app demonstrates how to implement **secure user authent
 - 🧩 **Dependency Injection**: Clean and testable code via Dagger Hilt  
 - 💾 **Local Data Storage**: Safe user data handling with Jetpack DataStore  
 
----
-
 ## 💡 Why Use This Project?
 
 - Learn how to build **modern login & registration screens** using Jetpack Compose  
@@ -30,8 +26,6 @@ This open-source Android app demonstrates how to implement **secure user authent
 - See practical examples of **Dagger Hilt** and **Kotlin Coroutines** in action  
 - Use this project as a **base template** for your own Android apps  
 - Boost app security and responsiveness with cutting-edge Android tech  
-
----
 
 ## 🔗 Backend API Integration
 
@@ -43,8 +37,6 @@ Please make sure to:
 - Clone and configure the backend server  
 - Run the backend API so the app can perform login, registration, and user management  
 
----
-
 ## 🚀 How to Get Started
 
 1. Clone this repository  
@@ -52,19 +44,16 @@ Please make sure to:
 3. Update the backend API URL in the app source  
 4. Build and run the app on an Android device or emulator  
 
----
 
 ## 🔍 Keywords
 
 `Jetpack Compose Login`, `Android Login Screen`, `Kotlin MVVM Authentication`, `Dagger Hilt Android`, `Kotlin Coroutines Flow`, `Android Register Screen`, `DataStore Android`, `Material Design 3`, `Kotlin Android Login Register Demo`, `Backend API Android`, `Kotlin User Authentication`
 
----
 
 ## ⭐ Support
 
 If you find this project helpful, please give it a star and share it with the community!
 
----
 
 ## ☕ Support Me
 
