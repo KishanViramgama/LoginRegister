@@ -12,5 +12,6 @@ data class UserItem(
     @SerializedName("name") val name: String = "",
     @SerializedName("email") val email: String = "",
     @SerializedName("password") val password: String = "",
-    @SerializedName("image") val image: String = ""
+    @SerializedName("image") val image: String = "",
+    @SerializedName("isOnline") val isOnline: Boolean = false
 )

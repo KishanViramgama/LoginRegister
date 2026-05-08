@@ -1,0 +1,33 @@
+/*val file = File(hashMap[profilePicture].toString())
+                        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                        val body = MultipartBody.Part.createFormData(profilePicture, file.name, requestFile)
+                        val name =
+                            RequestBody.create(
+                                MediaType.parse("multipart/form-data"),
+                                hashMap[name].toString()
+                            )
+                        val email =
+                            RequestBody.create(
+                                MediaType.parse("multipart/form-data"),
+                                hashMap[email].toString()
+                            )
+                        val password =
+                            RequestBody.create(
+                                MediaType.parse("multipart/form-data"),
+                                hashMap[password].toString()
+                            )
+
+                        val hashMapSendData: HashMap<String, RequestBody> = HashMap()
+                        hashMapSendData[KeyName.name] = name
+                        hashMapSendData[KeyName.email] = email
+                        hashMapSendData[KeyName.password] = password
+
+                        registerState.value = ResponseData.Loading()
+                        registerRepository.getData(body, hashMapSendData).catch {
+                            registerState.value =
+                                ResponseData.Error(null, context.failMsg(error = it.toString()))
+                        }.collect {
+                            registerState.value = responseCodeCheck.getResponseResult(
+                                it
+                            )
+                        }*/

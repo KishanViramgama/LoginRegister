@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
@@ -36,6 +37,7 @@ class RegisterViewModel @Inject constructor(
     fun register(name: String, email: String, password: String, image: String) {
 
         when (val result = checkValidation.registerValidation(name, email, password)) {
+
             is Result.Error -> {
                 registerMutableStateFlow.value = ResponseData.Error(result.data, result.error)
             }
@@ -48,7 +50,7 @@ class RegisterViewModel @Inject constructor(
                         val body = if (image.isNotEmpty()) {
                             val file = File(image)
                             val requestFile =
-                                RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
                             MultipartBody.Part.createFormData("image", file.name, requestFile)
                         } else {
                             MultipartBody.Part.createFormData(
@@ -59,17 +61,17 @@ class RegisterViewModel @Inject constructor(
                         }
                         val name =
                             RequestBody.create(
-                                MediaType.parse("multipart/form-data"),
+                                "multipart/form-data".toMediaTypeOrNull(),
                                 name
                             )
                         val email =
                             RequestBody.create(
-                                MediaType.parse("multipart/form-data"),
+                                "multipart/form-data".toMediaTypeOrNull(),
                                 email
                             )
                         val password =
                             RequestBody.create(
-                                MediaType.parse("multipart/form-data"),
+                                "multipart/form-data".toMediaTypeOrNull(),
                                 password
                             )
 

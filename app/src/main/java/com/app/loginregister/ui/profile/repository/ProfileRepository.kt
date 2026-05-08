@@ -16,9 +16,9 @@ class ProfileRepository @Inject constructor(
     private val context: Context
 ) {
 
-    fun getUserProfileData(): Flow<ResponseData<UserItemResponse>> {
+    fun getUserProfileData(currentUserId: String): Flow<ResponseData<UserItemResponse>> {
         return flow {
-            val profile = apiInterface.profile()
+            val profile = apiInterface.profile(currentUserId)
             emit(getResponseResult(profile, context))
         }.flowOn(Dispatchers.IO)
     }

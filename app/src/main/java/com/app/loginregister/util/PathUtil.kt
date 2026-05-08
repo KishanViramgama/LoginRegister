@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import androidx.core.net.toUri
 import java.net.URISyntaxException
 
 
@@ -34,7 +35,7 @@ object PathUtil {
             } else if (isDownloadsDocument(uri)) {
                 val id = DocumentsContract.getDocumentId(uri)
                 uri = ContentUris.withAppendedId(
-                    Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id)
+                    "content://downloads/public_downloads".toUri(), java.lang.Long.valueOf(id)
                 )
             } else if (isMediaDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
@@ -98,9 +99,9 @@ object PathUtil {
         return "com.android.providers.media.documents" == uri.authority
     }
 
-    /*
-        This method can parse out the real local file path from a file URI.
-    */
+    /**
+    This method can parse out the real local file path from a file URI.
+     */
     fun getUriRealPath(ctx: Context, uri: Uri): String? {
         var ret: String? = ""
         ret = if (isAboveKitKat()) {
@@ -113,10 +114,10 @@ object PathUtil {
         return ret
     }
 
-    /*
+    /**
     This method will parse out the real local file path from the file content URI.
     The method is only applied to the android SDK version number that is bigger than 19.
-    */
+     */
     private fun getUriRealPathAboveKitkat(ctx: Context?, uri: Uri?): String? {
         var ret: String? = ""
         if (ctx != null && uri != null) {
@@ -185,14 +186,14 @@ object PathUtil {
         return ret
     }
 
-    /* Check whether the current android os version is bigger than KitKat or not. */
+    /** Check whether the current android os version is bigger than KitKat or not. */
     private fun isAboveKitKat(): Boolean {
         var ret = false
         ret = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         return ret
     }
 
-    /* Check whether this uri represent a document or not. */
+    /** Check whether this uri represent a document or not. */
     private fun isDocumentUri(ctx: Context?, uri: Uri?): Boolean {
         var ret = false
         if (ctx != null && uri != null) {
@@ -201,9 +202,9 @@ object PathUtil {
         return ret
     }
 
-    /* Check whether this URI is a content URI or not.
-*  content uri like content://media/external/images/media/1302716
-*  */
+    /** Check whether this URI is a content URI or not.
+     *  content uri like content://media/external/images/media/1302716
+     *  */
     private fun isContentUri(uri: Uri?): Boolean {
         var ret = false
         if (uri != null) {
@@ -215,9 +216,9 @@ object PathUtil {
         return ret
     }
 
-    /* Check whether this URI is a file URI or not.
-*  file URI like file:///storage/41B7-12F1/DCIM/Camera/IMG_20180211_095139.jpg
-* */
+    /** Check whether this URI is a file URI or not.
+     *  file URI like file:///storage/41B7-12F1/DCIM/Camera/IMG_20180211_095139.jpg
+     * */
     private fun isFileUri(uri: Uri?): Boolean {
         var ret = false
         if (uri != null) {
@@ -230,7 +231,7 @@ object PathUtil {
     }
 
 
-    /* Check whether this document is provided by ExternalStorageProvider. Return true means the file is saved in external storage. */
+    /** Check whether this document is provided by ExternalStorageProvider. Return true means the file is saved in external storage. */
     private fun isExternalStoreDoc(uriAuthority: String?): Boolean {
         var ret = false
         if ("com.android.externalstorage.documents" == uriAuthority) {
@@ -239,7 +240,7 @@ object PathUtil {
         return ret
     }
 
-    /* Check whether this document is provided by DownloadsProvider. return true means this file is a downloaded file. */
+    /** Check whether this document is provided by DownloadsProvider. return true means this file is a downloaded file. */
     private fun isDownloadDoc(uriAuthority: String?): Boolean {
         var ret = false
         if ("com.android.providers.downloads.documents" == uriAuthority) {
@@ -248,9 +249,9 @@ object PathUtil {
         return ret
     }
 
-    /*
-        Check if MediaProvider provides this document, if true means this image is created in the android media app.
-    */
+    /**
+    Check if MediaProvider provides this document, if true means this image is created in the android media app.
+     */
     private fun isMediaDoc(uriAuthority: String?): Boolean {
         var ret = false
         if ("com.android.providers.media.documents" == uriAuthority) {
@@ -259,9 +260,9 @@ object PathUtil {
         return ret
     }
 
-    /*
-       Check whether google photos provide this document, if true means this image is created in the google photos app.
-    */
+    /**
+    Check whether google photos provide this document, if true means this image is created in the Google photos app.
+     */
     private fun isGooglePhotoDoc(uriAuthority: String?): Boolean {
         var ret = false
         if ("com.google.android.apps.photos.content" == uriAuthority) {
@@ -270,11 +271,9 @@ object PathUtil {
         return ret
     }
 
-    /* Return uri represented document file real local path.*/
+    /** Return uri represented document file real local path.*/
     private fun getImageRealPath(
-        contentResolver: ContentResolver,
-        uri: Uri,
-        whereClause: String?
+        contentResolver: ContentResolver, uri: Uri, whereClause: String?
     ): String? {
         var ret = ""
 

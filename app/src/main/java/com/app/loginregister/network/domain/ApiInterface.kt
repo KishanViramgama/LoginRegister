@@ -39,6 +39,6 @@ interface ApiInterface {
      * User profile
      */
     @GET(USERS)
-    suspend fun profile(): Response<UserItemResponse>
+    suspend fun profile(@retrofit2.http.Query("currentUserId") currentUserId: String): Response<UserItemResponse>
 
 }

@@ -8,6 +8,8 @@ import com.app.loginregister.ui.profile.repository.ProfileRepository
 import com.app.loginregister.network.utility.ResponseData
 import com.app.loginregister.util.failMsg
 import com.app.loginregister.util.isNetworkConnected
+import com.app.loginregister.util.MyDataStore
+import kotlinx.coroutines.flow.first
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,20 +25,22 @@ class ProfileViewModel @Inject constructor(
 
     private val profileMutableStateFlow: MutableStateFlow<ResponseData<Any>> =
         MutableStateFlow(ResponseData.Empty())
-    var profileStateFlow : StateFlow<ResponseData<Any>> = profileMutableStateFlow
+    var profileStateFlow: StateFlow<ResponseData<Any>> = profileMutableStateFlow
+
+    @Inject lateinit var myDataStore: MyDataStore
 
     fun getUserProfileData() {
 
         if (context.isNetworkConnected()) {
             viewModelScope.launch {
-
-                profileRepository.getUserProfileData()
+                val userId = myDataStore.getUserID.first()
+                profileRepository.getUserProfileData(userId)
                     .onStart { profileMutableStateFlow.value = ResponseData.Loading() }.catch {
-                    profileMutableStateFlow.value =
-                        ResponseData.Error(null, context.failMsg(error = it.toString()))
-                }.collect {
-                    profileMutableStateFlow.value = it
-                }
+                        profileMutableStateFlow.value =
+                            ResponseData.Error(null, context.failMsg(error = it.toString()))
+                    }.collect {
+                        profileMutableStateFlow.value = it
+                    }
             }
         } else {
             profileMutableStateFlow.value = ResponseData.InternetConnection(
@@ -44,6 +48,18 @@ class ProfileViewModel @Inject constructor(
             )
         }
 
+    }
+
+    fun clearState() {
+        profileMutableStateFlow.value = ResponseData.Empty()
+    }
+
+    fun logout(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            myDataStore.logout()
+            clearState()
+            onSuccess()
+        }
     }
 
 }

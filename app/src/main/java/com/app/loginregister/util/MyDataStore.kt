@@ -18,31 +18,29 @@ class MyDataStore(private val context: Context) {
         private val IS_LOGIN = booleanPreferencesKey("isLogin")
     }
 
-    //Insert user id
+    /**Insert user id*/
     suspend fun insertUserID(id: String) {
         context.dataStore.edit { preferences ->
             preferences[ID_KEY] = id
         }
     }
 
-    //Get user id
-    val getUserID: Flow<String> = context.dataStore.data
-        .map { preferences ->
-            preferences[ID_KEY] ?: ""
-        }
+    /**Get user id*/
+    val getUserID: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[ID_KEY] ?: ""
+    }
 
-    //User login or not save
+    /**User login or not save*/
     suspend fun isUserLogin(isLogin: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[IS_LOGIN] = isLogin
         }
     }
 
-    //Check user login or not
-    val isUserLogin: Flow<Boolean?> = context.dataStore.data
-        .map { preferences ->
-            preferences[IS_LOGIN] ?: false
-        }
+    /**Check user login or not*/
+    val isUserLogin: Flow<Boolean?> = context.dataStore.data.map { preferences ->
+        preferences[IS_LOGIN] ?: false
+    }
 
     suspend fun logout() {
         context.dataStore.edit {

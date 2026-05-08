@@ -1,23 +1,27 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
     namespace = "com.app.loginregister"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.app.loginregister"
-        minSdk = 23
-        targetSdk = 35
+        minSdk = 24
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -32,21 +36,38 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+}
+
+tasks.register<JavaExec>("scanHardcodedStrings") {
+    group = "verification"
+    description = "Scans Kotlin files for hardcoded strings"
+
+    val sourceSets = the<SourceSetContainer>()
+
+    classpath = sourceSets["main"].runtimeClasspath
+
+    mainClass.set("tools.HardcodedStringScanner")
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }
 }
 
@@ -55,50 +76,72 @@ composeCompiler {
 }
 
 dependencies {
+    // Jetpack Compose BOM
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    
+    // Compose Libraries (Versions managed by BOM)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+
     implementation(libs.lifecycle.process)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    
+    // Image Loading
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
+    implementation(libs.compose) // Glide Compose
 
-    //Constraint layout
+    // Constraint layout
     implementation(libs.androidx.constraintlayout.compose)
 
-    //retrofit
+    // Networking
     implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    //coroutines
+    // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    //hilt
+    // DI (Hilt)
     implementation(libs.hilt.android)
     ksp(libs.dagger.compiler)
     ksp(libs.hilt.compiler)
 
-    //Data store
+    // Data store
     implementation(libs.androidx.datastore.preferences)
 
-    //LiveData
+    // LiveData
     implementation(libs.androidx.lifecycle.livedata.ktx)
 
-    //Splash screen
+    // Splash screen
     implementation(libs.androidx.core.splashscreen)
 
-    //Glide
-    implementation(libs.compose)
+    // Navigation 3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.hilt.navigation.compose)
 
+    implementation(libs.kotlin.metadata.jvm)
+
+    // Ktor WebSockets
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.websockets)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
 }
